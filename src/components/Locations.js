@@ -16,7 +16,6 @@ const Locations = (props) => {
             <ul className="list-group mt-3 ml-5">
                 <li className="list-group-item active" aria-current="true">Locations:</li>
                 {props.locations.length > 0 ? listLocations : <p>no location yet</p>}
-
             </ul>
             <AddLocationForm/>
         </>);
