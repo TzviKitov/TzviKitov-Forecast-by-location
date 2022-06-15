@@ -9,9 +9,11 @@ export default function Menu(props) {
         <div>
             <h1>My Weather Forecast</h1>
 
-            <a href="/" className="btn btn-primary" aria-current="page">Forecast</a>{' '}
-            {/*<Link to="/locations">Locations</Link>*/}
-            <a href="/locations" className="btn btn-primary" aria-current="page">Locations</a>
+            {/*<a href="/" className="btn btn-primary" aria-current="page">Forecast</a>{' '}*/}
+            <Link className="btn btn-primary" aria-current="page" to="/">Forecast</Link>{' '}
+
+            <Link className="btn btn-primary" aria-current="page" to="/locations">Locations</Link>
+            {/*<a href="locations" className="btn btn-primary" aria-current="page">Locations</a>*/}
             <Outlet/>
         </div>
     );
