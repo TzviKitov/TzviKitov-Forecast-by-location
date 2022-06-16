@@ -62,26 +62,28 @@ export default function AddLocationForm(props) {
         const value = event.target.value;
         setInputs(values => ({...values, [name]: value}))
     }
+
     useEffect(() => {
-        if(nonEmptyValidation("name", inputs.name))
+        console.log(inputs);
+        if(inputs.name&&nonEmptyValidation("name", inputs.name))
         singleLocationValidation(inputs.name);
     }, [inputs.name]);
 
     useEffect(() => {
-        locationsValidation("latitude", inputs.latitude)
+        if(inputs.latitude)locationsValidation("latitude", inputs.latitude)
     }, [inputs.latitude]);
 
     useEffect(() => {
-        locationsValidation("longitude", inputs.longitude)
+        if(inputs.longitude) locationsValidation("longitude", inputs.longitude)
     }, [inputs.longitude]);
 
     const handleAddLocation = (event) => {
         event.preventDefault();
-        const ff =(validation)=>validation.isValid;
-        console.log(validationInputs);
-        console.log(Object.entries(validationInputs));
-
-        if(Object.entries(validationInputs).every((validation)=>validation[1].isValid)){
+        const allValidations =Object.entries(validationInputs);
+        // if(allValidations.every((validation)=>validation[1].errorMessage)){
+        //     setValidationInputs({name: {isValid:false}, latitude: {isValid:false}, longitude: {isValid:false}})
+        // }
+        if(allValidations.every((validation)=>validation[1].isValid)){
             props.locations.setLocations([...props.locations.locationsList, {
                 name: inputs.name,
                 latitude: inputs.latitude,
@@ -89,12 +91,13 @@ export default function AddLocationForm(props) {
             }]);
             setInputs({});
         }
-        event.preventDefault();
+        else setValidationInputs({name: {isValid:false,errorMessage: "Valid name" + requiredMessage}, latitude: {isValid:false,errorMessage: "Valid latitude"  + requiredMessage}, longitude: {isValid:false,errorMessage: "Valid longitude"  + requiredMessage}})
 
+        event.preventDefault();
     }
     return (
         <div className={"col-12 col-md-6 mb-2 mb-2 mt-3 ml-5"}>
-        <form className="border p-3" onSubmit={handleAddLocation}>
+        <form className="border p-3 bg-light" onSubmit={handleAddLocation}>
             <h2>Add Location:</h2>
             <div className="mb-3 col">
                 <label htmlFor="nameInput" className="form-label">Name:</label>
@@ -125,7 +128,17 @@ export default function AddLocationForm(props) {
     );
 }
 
-
+//
+// function Input(){
+//     return(
+// <div className="mb-3 col">
+//     <label htmlFor="nameInput" className="form-label">Name:</label>
+//     <input type="text" className="form-control" id="nameInput" name="name" value={inputs.name || ""}
+//            onChange={handleChange}/>
+//     <div
+//         className={validationInputs.name.isValid ? "" : "text-danger is-invalid"}> {validationInputs.name.isValid ? "" : validationInputs.name.errorMessage}</div>
+// </div>);
+// }
 // function updateValidationInputs() {
 //     let allAreValid = true;
 //     // let theInputs = Object.entries(inputs);

@@ -10,7 +10,7 @@ function listDayForecast(dataList) {
     return (
         <ul className="list-group mb-2 mt-3 ml-5">{
             dataList.map((day) =>
-                <li className="list-group-item d-flex justify-content-between align-items-center">
+                <li key={day.date} className="list-group-item d-flex justify-content-between align-items-center">
                     <div>
                         <b>Weather: </b> {day.weather}<br></br>
                         <b>Temperatures: </b> {day.temp2m.min}&#8451; - {day.temp2m.max}&#8451;<br></br>
@@ -23,16 +23,41 @@ function listDayForecast(dataList) {
     );
 }
 
-const useDataApi = (theUrl) => {
-    const [data, setData] = useState({null: "hhhh"}); // data to be fetched
+// const useDataApi = (theUrl) => {
+//
+//     const [data, setData] = useState({null: "hhhh"}); // data to be fetched
+//     const [isLoading, setIsLoading] = useState(false); // is it fetching?
+//     const [error, setError] = useState({isError: false, msg: ""}); // is there an error?
+//     useEffect(() => {
+//         const fetchData = async () => {
+//             setError(error => ({...error, isError: false})); // reset error state
+//             setIsLoading(true); // set loading state to true to show loading indicator for example
+//             try {
+//                 const result = await axios(theUrl);
+//                 setData(result.data);
+//             } catch (err) {
+//                 setError({isError: true, msg: err.message}); // an error occurred, set error state to true
+//             } finally {
+//                 setIsLoading(false); // set loading state to false to hide loading indicator
+//             }
+//         };
+//         fetchData(); // execute the function above
+//     }, []);
+//     console.log(data);
+//     return {data, isLoading, error}; // return the data and the URL setter function
+// };
+
+const DisplaysForecastResults = (props) => {
+    const [data, setData] = useState({}); // data to be fetched
     const [isLoading, setIsLoading] = useState(false); // is it fetching?
     const [error, setError] = useState({isError: false, msg: ""}); // is there an error?
+
     useEffect(() => {
         const fetchData = async () => {
             setError(error => ({...error, isError: false})); // reset error state
             setIsLoading(true); // set loading state to true to show loading indicator for example
             try {
-                const result = await axios(theUrl);
+                const result = await axios(`https://www.7timer.info/bin/api.pl?lon=${props.theLocation.longitude}&lat=${props.theLocation.latitude}&product=civillight&output=json`);
                 setData(result.data);
             } catch (err) {
                 setError({isError: true, msg: err.message}); // an error occurred, set error state to true
@@ -42,41 +67,29 @@ const useDataApi = (theUrl) => {
         };
         fetchData(); // execute the function above
     }, []);
-    return {data, isLoading, error}; // return the data and the URL setter function
-};
+    // const {
+    //     data,
+    //     isLoading,
+    //     error
+    // } = useDataApi(`https://www.7timer.info/bin/api.pl?lon=${props.theLocation.longitude}&lat=${props.theLocation.latitude}&product=civillight&output=json`);
 
-const DisplaysForecastResults = (props) => {
-    const {
-        data,
-        isLoading,
-        error
-    } = useDataApi(`https://www.7timer.info/bin/api.pl?lon=${props.theLocation.longitude}&lat=${props.theLocation.latitude}&product=civillight&output=json`);
-    console.log(data);
     return (
-        <div className={"p-3"}>
+        <div className={"border p-3 bg-light"}>
             <div className={"row"}>
                 <div className={"col-12 col-md-6 mb-2 mt-3 ml-5"}>
-
                     <h3> Forecast: {props.theLocation.name}</h3>
-
                     {isLoading ? (
                         <img className="position-absolute top-50 start-50 translate-middle"
                              src={'/images/loading-buffering.gif'}/>
-
                     ) : (<>{error.isError ? serverError + " (" + error.msg + ")." : data.dataseries ? listDayForecast(data.dataseries) : ""}</>)
                     }
-
                 </div>
                 <div className={"col-12 col-md-6 mb-2 mt-3 ml-5"}>
                     <div className="px-1 mx-1">
 
-                        <img
-                            src={`https:www.7timer.info/bin/astro.php?%20lon=${props.theLocation.longitude}&lat=${props.theLocation.latitude}&ac=0&lang=en&unit=metric&output=internal&tzshift=0`}/>
+                        <img className={"card-img-top"} src={`https:www.7timer.info/bin/astro.php?%20lon=${props.theLocation.longitude}&lat=${props.theLocation.latitude}&ac=0&lang=en&unit=metric&output=internal&tzshift=0`} onError={(event)=>event.target.src='/images/noPhotoAvailable.jpg'}/>
                     </div>
                 </div>
-
-
-
             </div>
         </div>);
 };
