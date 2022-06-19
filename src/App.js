@@ -5,14 +5,19 @@ import Menu from "./components/Menu";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import {useState} from "react";
 
+/**
+ * The function refers to the various routers in the menu, and holds the state of the list of locations
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function App() {
 
-    const initLocations =[
-        { name: 'jrusalm', latitude : 31.8, longitude : 35.2 },
-        { name: 'bbb', latitude : -88.343, longitude : -164.948990 },
-        { name: 'ccc', latitude : 14.343, longitude : 139.999443 },
-    ];
-    const [locationsList,setLocations]=useState(initLocations);
+    // const initLocations =[
+    //     { name: 'jrusalm', latitude : 31.8, longitude : 35.2 },
+    //     { name: 'bbb', latitude : -88.343, longitude : -164.948990 },
+    //     { name: 'ccc', latitude : 14.343, longitude : 139.999443 },
+    // ];
+    const [locationsList,setLocations]=useState([]);
 
     return (
       <>

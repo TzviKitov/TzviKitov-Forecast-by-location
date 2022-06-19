@@ -1,10 +1,12 @@
 import AddLocationForm from "./AddLocationForm";
 
+/**
+ * The page that manages the placements, including adding and removing a placement.
+ * @param props   The state of the list of locations and the function that updates it
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const Locations = (props) => {
-    //console.log(props.locations);
-    function handleDeleteLocation(){
-
-    }
     const locationsList = props.locations.locationsList.map((location) =>
         <li className="list-group-item d-flex justify-content-between align-items-center"key={location.name}>{location.name}
             <span className="badge">

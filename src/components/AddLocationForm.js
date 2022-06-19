@@ -1,6 +1,11 @@
-import {Outlet} from "react-router";
 import {useEffect, useState} from "react";
 
+/**
+ * Location addition form, including full and detailed validation
+ * @param props  List of locations
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function AddLocationForm(props) {
 
     const requiredMessage = " is required";
@@ -11,8 +16,11 @@ export default function AddLocationForm(props) {
 
     const [inputs, setInputs] = useState({})
     const [validationInputs, setValidationInputs] = useState({name: {}, latitude: {}, longitude: {}})
-    const [inputsArrValid, setInputsArrValid] = useState(false);
 
+    /**
+     * single Location Validation
+     * @param inputName input string for checking
+     */
     function singleLocationValidation(inputName){
        let isSingle =props.locations.locationsList.every( (location)=>location.name!==inputName);
         setValidationInputs(validationInputs => ({
@@ -24,7 +32,12 @@ export default function AddLocationForm(props) {
         }));
     }
 
-
+    /**
+     * Input validation required
+     * @param key name of specific input
+     * @param val value of specific input
+     * @returns {boolean}
+     */
     function nonEmptyValidation(key, val) {
         setValidationInputs(validationInputs => ({
             ...validationInputs,
@@ -33,9 +46,14 @@ export default function AddLocationForm(props) {
                 errorMessage: "Valid " + key + requiredMessage
             }
         }));
-        return val !== undefined && /^[a-zA-Z. ]+$/.test(val.trim());
+        return val !== undefined && /^[a-zA-Z.]+$/.test(val.trim());
     }
 
+    /**
+     *Input validation is required for degrees of position
+     * @param key name of specific input
+     * @param val value of specific input
+     */
     function locationsValidation(key, val) {
         let isNonEmpty = val !== undefined && val.trim() !== "";
         nonEmptyValidation(key, val);
@@ -57,14 +75,21 @@ export default function AddLocationForm(props) {
         }
     }
 
+    /**
+     * Treatment of change in input
+     * @param event
+     */
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
-        setInputs(values => ({...values, [name]: value}))
+if(!value) setValidationInputs( validationInputs => ({
+    ...validationInputs,
+    [name]: {isValid: false, errorMessage: "Valid "+ name+ requiredMessage}
+}));
+        setInputs({...inputs, [name]: value});
     }
 
     useEffect(() => {
-        console.log(inputs);
         if(inputs.name&&nonEmptyValidation("name", inputs.name))
         singleLocationValidation(inputs.name);
     }, [inputs.name]);
@@ -77,12 +102,13 @@ export default function AddLocationForm(props) {
         if(inputs.longitude) locationsValidation("longitude", inputs.longitude)
     }, [inputs.longitude]);
 
+    /**
+     * Handling the submission of the form
+     * @param event
+     */
     const handleAddLocation = (event) => {
         event.preventDefault();
         const allValidations =Object.entries(validationInputs);
-        // if(allValidations.every((validation)=>validation[1].errorMessage)){
-        //     setValidationInputs({name: {isValid:false}, latitude: {isValid:false}, longitude: {isValid:false}})
-        // }
         if(allValidations.every((validation)=>validation[1].isValid)){
             props.locations.setLocations([...props.locations.locationsList, {
                 name: inputs.name,
@@ -91,10 +117,14 @@ export default function AddLocationForm(props) {
             }]);
             setInputs({});
         }
-        else setValidationInputs({name: {isValid:false,errorMessage: "Valid name" + requiredMessage}, latitude: {isValid:false,errorMessage: "Valid latitude"  + requiredMessage}, longitude: {isValid:false,errorMessage: "Valid longitude"  + requiredMessage}})
-
-        event.preventDefault();
+        else allValidations.forEach((validation)=> {
+            if (validation[1].isValid===undefined) setValidationInputs(validationInputs => ({
+                ...validationInputs,
+                [validation[0]]: {isValid: false, errorMessage: "Valid " + validation[0] + requiredMessage}
+            }));
+        });
     }
+
     return (
         <div className={"col-12 col-md-6 mb-2 mb-2 mt-3 ml-5"}>
         <form className="border p-3 bg-light" onSubmit={handleAddLocation}>
@@ -104,7 +134,7 @@ export default function AddLocationForm(props) {
                 <input type="text" className="form-control" id="nameInput" name="name" value={inputs.name || ""}
                        onChange={handleChange}/>
                 <div
-                    className={validationInputs.name.isValid ? "" : "text-danger is-invalid"}> {validationInputs.name.isValid ? "" : validationInputs.name.errorMessage}</div>
+                    className={"text-danger"}> {validationInputs.name.isValid ? "" : validationInputs.name.errorMessage}</div>
             </div>
             <div className="mb-3 col">
                 <label htmlFor="latitudeInput" className="form-label">Latitude:</label>
@@ -112,7 +142,7 @@ export default function AddLocationForm(props) {
                        value={inputs.latitude || ""}
                        onChange={handleChange}/>
                 <div
-                    className={validationInputs.latitude.isValid ? "" : "text-danger is-invalid"}> {validationInputs.latitude.isValid ? "" : validationInputs.latitude.errorMessage}</div>
+                    className={"text-danger"}> {validationInputs.latitude.isValid ? "" : validationInputs.latitude.errorMessage}</div>
             </div>
             <div className="mb-3 col">
                 <label htmlFor="longitudeInput" className="form-label">Longitude:</label>
@@ -120,53 +150,10 @@ export default function AddLocationForm(props) {
                        value={inputs.longitude || ""}
                        onChange={handleChange}/>
                 <div
-                    className={validationInputs.longitude.isValid ? "" : "text-danger is-invalid"}> {validationInputs.longitude.isValid ? "" : validationInputs.longitude.errorMessage}</div>
+                    className={"text-danger"}> {validationInputs.longitude.isValid ? "" : validationInputs.longitude.errorMessage}</div>
             </div>
             <button type="submit" className="btn btn-primary">Add Location</button>
         </form>
         </div>
     );
 }
-
-//
-// function Input(){
-//     return(
-// <div className="mb-3 col">
-//     <label htmlFor="nameInput" className="form-label">Name:</label>
-//     <input type="text" className="form-control" id="nameInput" name="name" value={inputs.name || ""}
-//            onChange={handleChange}/>
-//     <div
-//         className={validationInputs.name.isValid ? "" : "text-danger is-invalid"}> {validationInputs.name.isValid ? "" : validationInputs.name.errorMessage}</div>
-// </div>);
-// }
-// function updateValidationInputs() {
-//     let allAreValid = true;
-//     // let theInputs = Object.entries(inputs);
-//     for (let input of Object.entries(inputs)) {
-//         if (input[0] !== "name") {
-//             if (isNaN(Number(input[1]))) allAreValid = false;
-//             setValidationInputs(validationInputs => ({
-//                 ...validationInputs,
-//                 [input[0]]: {isValid: !isNaN(Number(input[1])), errorMessage: nonNumMessage}
-//             }));
-//
-//
-//         }
-//
-//         if (input[1].length < 1) allAreValid = false;
-//         setValidationInputs(validationInputs => ({
-//             ...validationInputs,
-//             [input[0]]: {isValid: input[1].length > 0, errorMessage: input[0] + requiredMessage}
-//         }));
-//
-//
-//     }
-//     return false
-// }
-
-
-// if (updateValidationInputs()) { // if the input is less than 5 characters or contains a number
-//     setInputsArrValid(false);
-// } else {
-//     setInputsArrValid(true);
-// }

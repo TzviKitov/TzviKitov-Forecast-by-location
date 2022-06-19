@@ -1,10 +1,21 @@
 import {useState} from "react";
 import DisplaysForecastResults from "./DisplaysForecastResults";
 
+/**
+ * Management of the forecast page.
+ * In case a location is selected, its details will be displayed. Only if a location is selected and the forecast display button is also pressed - the forecast will be displayed.
+ Move to another page, or clicking on the default selection bar will reset the forecast display
+ * @param props locations list
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const Forecast = (props) => {
-    const [selectedLocation, setSelectedLocation] = useState({});
-    const [isSelected, setIsSelected] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState({}); //Saves the selected location for immediate details, and for forecasting in the event of a button click
+    const [isSelected, setIsSelected] = useState(false); //A flag that lights up when a forecast button is clicked
 
+    /**
+     * List of placement options
+     */
     const selectLocationsList = props.locations.map((location) =>
         <option key={location.name.toString()} value={location.name} onClick={() => {
             setSelectedLocation(location);
@@ -13,22 +24,24 @@ const Forecast = (props) => {
         }}>{location.name} </option>
     );
 
-    const locationDetails = () => {
+    /**
+     * Selected location information
+     * @returns {JSX.Element}
+     * @constructor
+     */
+    const LocationDetails = () => {
         return (<>{selectedLocation.name ?
             <div className="card w-50">
                 <div className="card-body"><h5 className="card-title">{selectedLocation.name}</h5>  <p
                     className="card-text">{selectedLocation.latitude}&deg; , {selectedLocation.longitude}&deg;</p></div>
             </div> : ""}
         </>);
-        //else return(<div>""</div>);
     }
 
     return (
         <>
-            {isSelected ? <DisplaysForecastResults theLocation={selectedLocation}/> : ""}
             <div className={"row"}>
                 <div className={"col-12 col-md-6 mb-1 mt-4 ml-5"}>
-
                     <form onSubmit={(event) => {
                         event.preventDefault();
                         if (selectedLocation.name) setIsSelected(true);
@@ -48,30 +61,12 @@ const Forecast = (props) => {
                     </form>
                 </div>
                 <div className={"col-12 col-md-6 mb-2 mt-4 ml-5"}>
-                    {locationDetails()}
+                    <LocationDetails/>
                 </div>
             </div>
+            {isSelected ? <DisplaysForecastResults theLocation={selectedLocation}/> : ""}
+
         </>);
 }
 
 export default Forecast;
-
-
-
-
-// <div className="card w-50">
-//     <div className="card-body">
-//         <h5 className="card-title">Card title</h5>
-//         <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
-//         <a href="#" className="btn btn-primary">Button</a>
-//     </div>
-// </div>
-
-{/*}&deg;*/
-}
-
-// <>
-//     {selectedLocation?(<>
-//         {selectedLocation.name} {selectedLocation.latitude}{','}  {selectedLocation.longitude}
-//     </>) : ("")}
-// </>
