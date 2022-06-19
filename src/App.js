@@ -11,12 +11,6 @@ import {useState} from "react";
  * @constructor
  */
 function App() {
-
-    // const initLocations =[
-    //     { name: 'jrusalm', latitude : 31.8, longitude : 35.2 },
-    //     { name: 'bbb', latitude : -88.343, longitude : -164.948990 },
-    //     { name: 'ccc', latitude : 14.343, longitude : 139.999443 },
-    // ];
     const [locationsList,setLocations]=useState([]);
 
     return (
