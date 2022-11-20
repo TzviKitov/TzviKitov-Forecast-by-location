@@ -1,8 +1,8 @@
 # Ex3Template
 
-<h1>ex3</h1>
+<h1>Forcest by location</h1>
 
 <h1>Tzvi Kitov
-and eli franknhois</h1>
-<p>Emails: shalomki@edu.hac.ac.il ; eliezerfr@edu.hac.ac.il</p>
-<p>ID Numbers: 038086781; 206880494</p>
+</h1>
+<p>A nice site for displaying a forecast for seven days by location, developed in react technology.
+The system receives new locations from the user, and displays them in a list. When a user selects a location to display, pulls the forecast data from a remote server and displays the forecast for the next 7 days along with the forecast image for illustration. </p>
